@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments.html :: header"><meta charset="UTF-8"></head>
+<body>
+	<nav th:replace="fragments.html :: main-nav('login')"></nav>
+	<div th:if="${!#strings.isEmpty(emailMessage)}" class="alert alert-primary mb-1" role="alert" th:text="${emailMessage}"></div>
+	
+	<div class="container1">
+		<div class="py-5 text-center">
+			<h2>로그인</h2>
+		</div>
+		<div class="row justify-content-center">
+			<form class="needs-validation col-sm-6" action="#" th:action="@{/login}" method="post" novalidate>
+		 		<div th:if="${param.error != null}" class="alert alert-danger" role="alert">
+			 		<p>이메일 또는 닉네임과 패스워드가 정확하지 않습니다</p>
+			 	</div>
+			 	<div class="form-group">
+                    <label for="username">이메일 또는 닉네임</label>
+                    <input id="username" name="username" type="text" class="form-control" aria-describedby="usernameHelp" required>
+                    <small id="usernameHelp" class="form-text text-muted">가입할 때 사용한 이메일 또는 닉네임을 입력하세요.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">패스워드</label>
+                    <input id="password" name="password" type="password" class="form-control" aria-describedby="passwordHelp"  required>
+                </div>
+				<!-- 
+				<div class="form-group form-check">
+			    	<input type="checkbox" class="form-check-input" id="rememberMe" name="remember-me" checked />
+			    	<label class="form-check-label" for="rememberMe" aria-describedby="rememberMeHelp">로그인 유지</label>
+			  	</div>  -->
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" type="submit" aria-describedby="submitHelp">가입하기</button>
+            	</div>
+        	</form>
+    	</div>
+	</div>
+	<footer th:insert="fragments.html :: footer"></footer>
+</body>
+</html>

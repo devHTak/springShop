@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	  
+<!-- header start -->
+<head th:fragment="header">
+	<meta charset="UTF-8">
+	<title>Spring Shop</title>
+	<link rel="stylesheet" type="text/css" href="/node_modules/bootstrap/dist/css/bootstrap.min.css" />
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+	<style>
+		html, body {
+			width: 100%;
+			height: 100%;
+		}
+		.container1 {
+			background-color: #e9ecef;
+			height: 90%;
+		}
+		footer {
+			height: 4%;
+		}
+		nav {
+			height: 4%;
+		}
+	</style>
+	<script type="text/javascript" src="/node_modules/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<!-- header end -->
+
+<!-- main nav start -->
+<div th:fragment="main-nav(current)">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<a class="navbar-brand" href="/">SpringShop</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbarNav">
+		<ul class="navbar-nav mr-auto" sec:authorize="!isAuthenticated()">
+			<li class="nav-item" th:classappend="${current == 'login'} ? active">
+				<a class="nav-link" href="#" th:href="@{/login}">Login</a>
+			</li>
+			<li class="nav-item" th:classappend="${current == 'sign-up'} ? active">
+				<a class="nav-link" href="#" th:href="@{/accounts}">Sign Up</a>
+			</li>
+		</ul>
+		<ul class="navbar-nav mr-auto" sec:authorize="hasRole('ROLE_ACCOUNT')">
+			<li class="nav-item" th:classappend="${current=='cart'} ? active">
+				<a class="nav-link" href="#" th:href="@{/accounts/${accountId}/products}">Cart</a>
+			</li>
+			<li class="nav-item" th:classappend="${current=='order'} ? active">
+				<a class="nav-link" href="#" th:href="@{/accounts/${accountId}/orders}">Order</a>
+			</li>
+			<li class="nav-item" th:classappend="${current=='order'} ? active">
+				<a class="nav-link" href="#" th:href="@{/logout}">Logout</a>
+			</li>
+		</ul>
+		
+		<ul class="navbar-nav mr-auto" sec:authorize="hasRole('ROLE_VENDOR')">
+			<li class="nav-item" th:classappend="${current=='product'} ? active">
+				<a class="nav-link" href="#" th:href="@{/accounts/${accountId}/products}">Product</a>
+			</li>
+			<li class="nav-item" th:classappend="${current=='order'} ? active">
+				<a class="nav-link" href="#" th:href="@{/logout}">Logout</a>
+			</li>
+		</ul>
+		<form class="form-inline my-2 my-lg-0">
+			<input class="form-control mr-sm-2" type="search" placeholder="Search Product" aria-label="Search" >
+	    	<button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+		</form>
+	</div>
+</nav>
+</div>
+<!-- main nav end -->
+
+<!-- footer start -->
+<div th:fragment="footer" style="text-align: center; color:white;" class="bg-dark">
+	<p>코로나 시대에 연말연시 놀면 뭐하니 프로젝트<br/>
+	Copy Right By devhtak</p> 
+</div>
+<!-- footer end -->
+
+<!-- form - validation start-->
+<script type="application/javascript" th:fragment="form-validation">
+    (function () {
+        'use strict';
+
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+
+            // Loop over them and prevent submission
+            Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        }, false)
+    }())
+</script>
+<!-- form - validation end -->
