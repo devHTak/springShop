@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shop.account.form.AccountSignUpForm;
+import com.shop.account.form.ProfileForm;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +35,14 @@ public class AccountService implements UserDetailsService {
 	
 	public boolean existsByEmail(String email) {
 		return accountRepository.existsByEmail(email);
+	}
+	
+	public int countByNickname(String nickname) {
+		return accountRepository.countByNickname(nickname);
+	}
+	
+	public int countByEmail(String email) {
+		return accountRepository.countByEmail(email);
 	}
 	
 	public Account signUp(AccountSignUpForm accountSignUpForm) {
@@ -79,6 +88,18 @@ public class AccountService implements UserDetailsService {
 		return accountRepository.findById(id).orElseThrow(()-> {
 			throw new IllegalArgumentException(String.format("Account[Id= %d] is not found", id));
 		});
+	}
+	
+	public Account updateById(Account account, ProfileForm profileForm) {		
+		account.setAddress(profileForm.getAddress());
+		account.setEmail(profileForm.getEmail());
+		account.setName(profileForm.getName());
+		account.setNickname(profileForm.getNickname());
+		account.setNumber(profileForm.getNumber());
+		account.setPassword(passwordEncoder.encode(profileForm.getPassword()));
+		account.setRegistrationNumber(profileForm.getRegistrationNumber());
+		
+		return accountRepository.save(account);
 	}
 
 }

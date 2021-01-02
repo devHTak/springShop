@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: header"><meta charset="UTF-8"></head>
+<body>
+	<nav th:replace="fragments.html :: main-nav('profile', ${account})"></nav>	                
+	<div class="container1">
+		<div class="alert alert-primary" role="alert" th:if="${!#strings.isEmpty(successMessage)}" th:text="${successMessage}"></div>
+		<div class="col-6" style="margin: auto">
+			<div class="py-5 text-center" th:if="${type == 'NEW'}">
+				<h2>신규 상품 등록</h2>
+			</div>
+			<div class="py-5 text-center" th:if="${type == 'UPDATE'}">
+				<h2 th:text="${product.name} + ' 수정'"></h2>
+			</div>
+			<!-- 일반 회원 프로필 수정 -->
+			<div class="justify-content-center">
+			 	<form class="needs-validation col-sm-12" action="#" th:object=${productForm} method="post" novalidate>
+			 		<input type="hidden" id="type" th:value="${type}">
+			 		<input type="hidden" id="accountId" th:value=${account.id}>
+			 		<input type="hidden" id="productId" th:value=${product?.id}>
+			 		<div class="form-group">
+	                    <label for="name">상품 명</label>
+	                    <input id="name" name="name" type="text" class="form-control" th:field="*{name}" required>
+	                    <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</small>
+	                </div>
+	                <div class="form-group">
+	                    <label for="description">상품 소개</label>
+	                    <input id="description" name="description" type="text" class="form-control" th:field="*{description}" required>
+	                    <small class="form-text text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</small>
+	                </div>
+	                <div class="form-group">
+	                    <label for="price">상품 가격</label>
+	                    <input id="price" name="price" type="text" class="form-control" th:field="*{price}" required>
+	                    <small class="form-text text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Error</small>
+	                </div>
+	                <div class="form-group">
+	                    <label for="stock">상품 재고</label>
+	                    <input id="stock" name="stock" type="text" class="form-control" th:field="*{stock}" required>
+	                    <small class="form-text text-danger" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}">Error</small>
+	                </div>
+	                <div class="form-group" th:if="${type == 'NEW'}">
+	                    <button class="btn btn-primary btn-block" type="submit" onclick="submit()">등록하기</button>
+	                </div>
+	                <div class="form-group" th:if="${type == 'UPDATE'}">
+	                    <button class="btn btn-primary btn-block" type="submit" onclick="submit()">수정하기</button>
+	                </div>
+	            </form>
+			</div>			
+		</div>
+	</div>
+	<footer th:insert="fragments.html :: footer"></footer>
+</body>
+<script th:replace="fragments.html :: form-validation"></script>
+<script type="application/javascript">
+	const submit = function() {
+		const type = document.querySelector('.type').value;
+		const form = document.querySelector('form')[0];
+		const accountId = document.querySelector('.accountId').value;
+		if(type == 'NEW') {
+			form.setAttribute('action', '/accounts/' + accountId + '/products/new');
+		} else {
+			const productId = document.querySelector('.productId').value;
+			form.setAttribute('action', '/accounts/' + accountId + '/products/' + productId);
+		}
+		form.submit();
+	}
+</script>
+</html>

@@ -117,5 +117,39 @@ public class AccountControllerTest {
 			.andExpect(view().name("account/sign-up"))
 			.andExpect(unauthenticated());
 	}
+	
+	@WithMockAccount(nickname = "test", role = "ROLE_ACCOUNT")
+	@DisplayName("회원 수정 페이지 조회")
+	@Test
+	public void getAccountProfile() throws Exception {
+		Account account = accountService.findByNickname("test");
+		mockMvc.perform(get("/accounts/" + account.getId()))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(view().name("account/profile"))
+			.andExpect(model().attributeExists("account"))
+			.andExpect(model().attributeExists("profileForm"));
+	}
+	
+	@WithMockAccount(nickname = "test", role = "ROLE_ACCOUNT")
+	@DisplayName("회원 수정 완료")
+	@Test
+	public void updateAccountSuccess() throws Exception {
+		Account account = accountService.findByNickname("test");
+		mockMvc.perform(post("/accounts/" + account.getId())
+					.param("nickname", "text1")
+					.param("email", "test1@test.com")
+					.param("password", "12341234")
+					.param("name", "test1")
+					.param("number", "010-1234-1234")
+					.param("address.zipCode", "1234")
+					.param("address.address", "서울시 강서구"))
+			.andDo(print())
+			.andExpect(status().is3xxRedirection())
+			.andExpect(redirectedUrl("/accounts/" + account.getId()));
+		
+		Account byNickname = accountService.findByNickname("text1");
+		assertEquals(account.getId(), byNickname.getId());
+	}
 
 }

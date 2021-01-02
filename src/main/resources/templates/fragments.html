@@ -15,13 +15,16 @@
 		}
 		.container1 {
 			background-color: #e9ecef;
-			height: 90%;
+			height: 88%;
+			overflow: scroll;
 		}
 		footer {
 			height: 4%;
+			text-align: center; 
+			color:black;
 		}
 		nav {
-			height: 4%;
+			height: 5%;
 		}
 	</style>
 	<script type="text/javascript" src="/node_modules/jquery/dist/jquery.min.js"></script>
@@ -30,7 +33,7 @@
 <!-- header end -->
 
 <!-- main nav start -->
-<div th:fragment="main-nav(current)">
+<div th:fragment="main-nav(current, account)">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 	<a class="navbar-brand" href="/">SpringShop</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,10 +50,13 @@
 		</ul>
 		<ul class="navbar-nav mr-auto" sec:authorize="hasRole('ROLE_ACCOUNT')">
 			<li class="nav-item" th:classappend="${current=='cart'} ? active">
-				<a class="nav-link" href="#" th:href="@{/accounts/${accountId}/products}">Cart</a>
+				<a class="nav-link" href="#" th:href="@{'/accounts/' + ${account.id}}">Profile</a>
+			</li>
+			<li class="nav-item" th:classappend="${current=='cart'} ? active">
+				<a class="nav-link" href="#" th:href="@{'/accounts/' + ${account.id} + '/products'}">Cart</a>
 			</li>
 			<li class="nav-item" th:classappend="${current=='order'} ? active">
-				<a class="nav-link" href="#" th:href="@{/accounts/${accountId}/orders}">Order</a>
+				<a class="nav-link" href="#" th:href="@{'/accounts/' + ${account.id} + '/orders'}">Order</a>
 			</li>
 			<li class="nav-item" th:classappend="${current=='order'} ? active">
 				<a class="nav-link" href="#" th:href="@{/logout}">Logout</a>
@@ -58,15 +64,18 @@
 		</ul>
 		
 		<ul class="navbar-nav mr-auto" sec:authorize="hasRole('ROLE_VENDOR')">
+			<li class="nav-item" th:classappend="${current=='cart'} ? active">
+				<a class="nav-link" href="#" th:href="@{'/accounts/' + ${account.id}}">Profile</a>
+			</li>
 			<li class="nav-item" th:classappend="${current=='product'} ? active">
-				<a class="nav-link" href="#" th:href="@{/accounts/${accountId}/products}">Product</a>
+				<a class="nav-link" href="#" th:href="@{'/accounts/' + ${account.id} + '/products'}">Product</a>
 			</li>
 			<li class="nav-item" th:classappend="${current=='order'} ? active">
 				<a class="nav-link" href="#" th:href="@{/logout}">Logout</a>
 			</li>
 		</ul>
-		<form class="form-inline my-2 my-lg-0">
-			<input class="form-control mr-sm-2" type="search" placeholder="Search Product" aria-label="Search" >
+		<form class="form-inline my-2 my-lg-0" action="#" th:action="@{/products}" method="get">
+			<input class="form-control mr-sm-2" type="search" placeholder="Search Product" aria-label="Search" name="name" id="name">
 	    	<button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
 		</form>
 	</div>
@@ -75,7 +84,7 @@
 <!-- main nav end -->
 
 <!-- footer start -->
-<div th:fragment="footer" style="text-align: center; color:white;" class="bg-dark">
+<div th:fragment="footer" class="bg-light border-top border-secondary">
 	<p>코로나 시대에 연말연시 놀면 뭐하니 프로젝트<br/>
 	Copy Right By devhtak</p> 
 </div>
