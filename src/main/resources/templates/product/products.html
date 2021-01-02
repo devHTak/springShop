@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: header"><meta charset="UTF-8"></head>
+<body>
+	<nav th:replace="fragments.html :: main-nav('product', ${account})"></nav>	                
+	<div class="container1">
+		<div class="col-11" style="margin: auto">
+			<div class="py-5 text-center">
+				<h2 th:if="${type == 'VENDOR'}" th:text="${account.nickname}  + ' 업체에서 등록한 상품'"></h2>
+				<h2 th:if="${type == 'FIND'}" th:text="${keyword}  + '로 찾은 상품'"></h2>
+			</div>
+			<div class="text-right" sec:authorize="${hasRole('ROLE_VENDOR')}">
+				<a class="btn btn-outline-primary" href="#" th:href="@{'/accounts/' + ${account.id} + '/products/new'}">신규 상품 등록</a>
+			</div>
+			<div class="card-deck">
+			 	<div class="col-sm-4 mt-2" th:each="product, index : ${products}">
+			 		<div class="card">
+				 		<div class="card-body">
+							<a class="" href="#" th:href="@{'/accounts/' + ${account.id} + '/products/' + ${product.id}}">
+								<h5 class="card-title" th:text="${product.name}"></h5>
+							</a>
+							<p class="card-text" th:text="${product.description}">description</p>
+							<p class="card-text" th:text="'가격 : ' + ${product.price}" >price</p>
+							<p class="card-text" th:text="'재고: ' + ${product.stock}" name="stock">stock</p>
+						</div>
+						<div class="card-footer text-right pt-2 py-0 pr-0 pl-0">
+							<form class="needs-validation col-sm-12 pr-1" action="#" method="post" novalidate>
+								<div class="form-group">
+									<input type="hidden" th:value="${index.index}" name="index">
+									<input type="hidden" th:value="${product.price}" name="price" >
+									<input type="hidden" th:value="${product.id}" name="productId" >
+									<input type="hidden" name="totalPrice" >
+									<a class="col-1 bg-secondary text-white" onclick="countMinus(this)" href="#">-</a>
+									<span class="col-1 bolder" name="count" >0</span>
+									<a class="col-1 bg-secondary text-white" onclick="countPlus(this)" href="#">+</a>
+									<a type="button" class="btn btn-outline-primary col-3">카트</a>
+									<a type="button" class="btn btn-outline-primary col-3">주문</a>
+								</div>
+							</form>
+						</div>
+					</div>
+			 	</div>
+			</div>			
+		</div>
+	</div>
+	<footer th:insert="fragments.html :: footer"></footer>
+</body>
+<script type="application/javascript">
+	const countPlus = function(button) {
+		const index = Number.parseInt(button.parentElement.children.index.value);
+		const value = document.getElementsByName('count')[index];
+		const stock = Number.parseInt(document.getElementsByName('stock')[index].innerText.split(':')[1]);
+		if(stock >= Number.parseInt(value.innerText) + 1) {
+			value.innerText = Number.parseInt(value.innerText) + 1;
+		} else {
+			alert(stock + ' 보다 많이 선택할 수 없습니다.');
+		}
+	};
+	
+	const countMinus = function(button) {
+		const index = Number.parseInt(button.parentElement.children.index.value);
+		const value = document.getElementsByName('count')[index];
+		if(Number.parseInt(value.innerText) - 1 >= 0) {
+			value.innerText = Number.parseInt(value.innerText) - 1;
+		} else {
+			alert('0개 이상 선택해야 합니다.');
+		}
+	};
+</script>
+</html>

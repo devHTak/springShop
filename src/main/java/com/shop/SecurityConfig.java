@@ -14,6 +14,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// TODO Auto-generated method stub
 		http.csrf().disable()
 			.authorizeRequests()
+			.antMatchers("/accounts/*/products/**").hasAuthority("ROLE_VENDOR")
 			.antMatchers("/", "/login", "/accounts", "/vendors").permitAll()
 			.anyRequest().authenticated();
 		

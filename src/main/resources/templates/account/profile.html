@@ -2,21 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments.html :: header"><meta charset="UTF-8"></head>
 <body>
-	<nav th:replace="fragments.html :: main-nav('sign-up', 0)"></nav>	                
+	<nav th:replace="fragments.html :: main-nav('profile', ${account})"></nav>	                
 	<div class="container1">
+		<div class="alert alert-primary" role="alert" th:if="${!#strings.isEmpty(successMessage)}" th:text="${successMessage}"></div>
 		<div class="col-6" style="margin: auto">
 			<div class="py-5 text-center">
-				<h2>회원 가입</h2>
+				<h2 th:text="${account.nickname}  + ' 프로필 수정'"></h2>
 			</div>
+			<!-- 일반 회원 프로필 수정 -->
 			<div class="justify-content-center">
-			 	<form class="needs-validation col-sm-12" action="#" th:action="@{/accounts}" th:object=${accountSignUpForm} method="post" novalidate>
-			 		<div class="form-group">
-				 		<label for="accountCode">가입 유형</label>
-				 		<select class="form-control" id="accountCode" name="accountCode" th:field="*{accountCode}">
-				 			<option th:value="ACCOUNT">회원</option>
-				 			<option th:value="VENDOR">업체</option>
-				 		</select>
-				 	</div>
+			 	<form class="needs-validation col-sm-12" action="#" th:action="@{'/accounts/' + ${account.id}}" th:object=${profileForm} method="post" novalidate>
 			 		<div class="form-group">
 	                    <label for="nickname">닉네임</label>
 	                    <input id="nickname" name="nickname" type="text" class="form-control" aria-describedby="nicknameHelp" th:field="*{nickname}" minlength="2" maxlength="20" required>
@@ -34,12 +29,29 @@
 	                    <small id="passwordHelp" class="form-text text-muted">8에서 20자 사이로 패스워드를 입력해주세요</small>
 	                    <small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</small>
 	                </div>
-	
 	                <div class="form-group">
-	                    <button class="btn btn-primary btn-block" type="submit" aria-describedby="submitHelp">가입하기</button>
+	                    <label for="zipCode">우편번호</label>
+	                    <input id="zipCode" name="zipCode" type="text" class="form-control" th:field="*{address.zipCode}" required>
+	                </div>
+					<div class="form-group">
+	                    <label for="address">주소</label>
+	                    <input id="address" name="address" type="text" class="form-control" aria-describedby="addressHelp" th:field="*{address.address}" required>
+	                    <small id="addressHelp" class="form-text text-muted">배송 등에 사용됩니다.</small>
+	                </div>
+	                <div class="form-group">
+	                    <label for="number">전화번호</label>
+	                    <input id="number" name="number" type="text" class="form-control" aria-describedby="numberHelp" th:field="*{number}" required>
+	                </div>
+	                <div class="form-group" sec:authorize="hasRole('ROLE_VENDOR')">
+	                    <label for="registrationNumber">사업자 등록 번호</label>
+	                    <input id="registrationNumber" name="registrationNumber" type="text" class="form-control" aria-describedby="registrationNumberHelp" th:field="*{registrationNumber}" required>
+	                    <small id="registrationNumberHelp" class="form-text text-muted">업체에 사업자 등록번호를 입력해주세요.</small>
+	                </div>
+	                <div class="form-group">
+	                    <button class="btn btn-primary btn-block" type="submit" aria-describedby="submitHelp">수정하기</button>
 	                </div>
 	            </form>
-			</div>
+			</div>			
 		</div>
 	</div>
 	<footer th:insert="fragments.html :: footer"></footer>

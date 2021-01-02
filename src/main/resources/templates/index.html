@@ -3,7 +3,7 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments.html :: header"><meta charset="UTF-8"></head>
 <body>
-	<nav th:replace="fragments.html :: main-nav('main')"></nav>
+	<nav th:replace="fragments.html :: main-nav('main', ${account})"></nav>
 	<div th:if="${!#strings.isEmpty(emailMessage)}" class="alert alert-primary mb-1" role="alert" th:text="${emailMessage}"></div>
 	
 	<div class="container1">
