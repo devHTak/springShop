@@ -3,7 +3,6 @@ package com.shop.product;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -27,7 +26,7 @@ public class Product {
 	@Id @GeneratedValue
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	private Account account;
 	
 	private String name;
@@ -35,6 +34,7 @@ public class Product {
 	private String description;
 	private int price;
 	private int stock;
+	private int sellCount;
 	private LocalDateTime registerDate;
 
 }

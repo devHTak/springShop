@@ -51,7 +51,7 @@ public class Account {
 	
 	private String registrationNumber;
 	
-	@OneToMany(fetch = FetchType.LAZY) 
+	@OneToMany(mappedBy = "account")
 	@Default
 	private Set<Product> products = new HashSet<>();
 	

@@ -27,6 +27,7 @@ public class ProductService {
 				.name(productForm.getName())
 				.price(productForm.getPrice())
 				.stock(productForm.getStock())
+				.sellCount(0)
 				.registerDate(LocalDateTime.now()).build();
 		
 		account.addProduct(product);
