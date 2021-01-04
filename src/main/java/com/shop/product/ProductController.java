@@ -2,8 +2,11 @@ package com.shop.product;
 
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -27,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 	
 	private final ProductService productService;
-	private final OrdersService orderService;
+	private final OrdersService ordersService;
 	private final OrdersFormValidator ordersFormValidator;
 	
 	@InitBinder("ordersForm")
@@ -49,8 +52,13 @@ public class ProductController {
 	}
 	
 	@PostMapping("/products/{productId}/carts")
-	public String insertCartProduct(@CurrentUser Account account, @PathVariable Long productId, @ModelAttribute OrdersForm ordersForm, RedirectAttributes attribute, Model model) {
-		Orders order = orderService.saveToCart(account, productId, ordersForm);
+	public String insertCartProduct(@CurrentUser Account account, @PathVariable Long productId, @Valid @ModelAttribute OrdersForm ordersForm, Errors errors, RedirectAttributes attribute, Model model) {
+		if(errors.hasErrors()) {
+			model.addAttribute("account", account);
+			return "index";
+		}
+		
+		Orders order = ordersService.saveToCart(account, productId, ordersForm);
 		
 		attribute.addFlashAttribute("successMessage", "상품을 카트에 담았습니다.");
 		return "redirect:/carts";
@@ -58,8 +66,13 @@ public class ProductController {
 	
 	
 	@PostMapping("/products/{productId}/orders")
-	public String insertOrderProduct(@CurrentUser Account account, @PathVariable Long productId, @ModelAttribute OrdersForm ordersForm, RedirectAttributes attribute, Model model) {
-		Orders order = orderService.saveToOrder(account, productId, ordersForm);
+	public String insertOrderProduct(@CurrentUser Account account, @PathVariable Long productId, @Valid @ModelAttribute OrdersForm ordersForm, Errors errors, RedirectAttributes attribute, Model model) {
+		if(errors.hasErrors()) {
+			model.addAttribute("account", account);
+			return "index";
+		}
+		
+		Orders order = ordersService.saveToOrder(account, productId, ordersForm);
 		
 		attribute.addFlashAttribute("successMessage", "상품을 주문하였습니다.");
 		return "redirect:/orders";
