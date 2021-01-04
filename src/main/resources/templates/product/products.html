@@ -13,33 +13,38 @@
 				<a class="btn btn-outline-primary" href="#" th:href="@{'/accounts/' + ${account.id} + '/products/new'}">신규 상품 등록</a>
 			</div>
 			<div class="card-deck">
-			 	<div class="col-sm-4 mt-2" th:each="product, index : ${products}">
-			 		<div class="card">
-				 		<div class="card-body">
-							<a class="" href="#" th:href="@{'/accounts/' + ${account.id} + '/products/' + ${product.id}}">
-								<h5 class="card-title" th:text="${product.name}"></h5>
-							</a>
-							<p class="card-text" th:text="${product.description}">description</p>
-							<p class="card-text" th:text="'가격 : ' + ${product.price}" >price</p>
-							<p class="card-text" th:text="'재고: ' + ${product.stock}" name="stock">stock</p>
-						</div>
-						<div class="card-footer text-right pt-2 py-0 pr-0 pl-0">
-							<form class="needs-validation col-sm-12 pr-1" action="#" method="post" novalidate>
+				<form class="needs-validation col-sm-12 pr-1" action="#" id="saveForm" th:object="${ordersForm}">
+					<input type="hidden" id="price" name="price" th:field="*{price}">
+					<input type="hidden" id="quantity" name="quantity" th:field="*{quantity}">
+					<input type="hidden" id="stock" name="stock" th:field="*{stock}">
+				 	<div class="col-sm-4 mt-2" th:each="product, index : ${products}">
+				 		<div class="card">
+					 		<div class="card-body">
+								<a class="" href="#" th:href="@{'/accounts/' + ${account.id} + '/products/' + ${product.id}}">
+									<h5 class="card-title" th:text="${product.name}"></h5>
+								</a>
+								<p class="card-text" th:text="${product.description}">description</p>
+								<p class="card-text" th:text="'가격 : ' + ${product.price}" name="price" >price</p>
+								<p class="card-text" th:text="'재고: ' + ${product.stock}" name="stock">stock</p>
+							</div>
+							<div class="card-footer text-right pt-2 py-0 pr-0 pl-0" sec:authorize="${hasRole('ROLE_VENDOR')}">
+								협력사는 주문을 할 수 없습니다.
+							</div>
+							<div class="card-footer text-right pt-2 py-0 pr-0 pl-0" sec:authorize="${hasRole('ROLE_ACCOUNT')}">
 								<div class="form-group">
+									<input type="hidden" th:value="${product.id}" name="productId" >
 									<input type="hidden" th:value="${index.index}" name="index">
 									<input type="hidden" th:value="${product.price}" name="price" >
-									<input type="hidden" th:value="${product.id}" name="productId" >
-									<input type="hidden" name="totalPrice" >
 									<a class="col-1 bg-secondary text-white" onclick="countMinus(this)" href="#">-</a>
 									<span class="col-1 bolder" name="count" >0</span>
 									<a class="col-1 bg-secondary text-white" onclick="countPlus(this)" href="#">+</a>
-									<a type="button" class="btn btn-outline-primary col-3">카트</a>
-									<a type="button" class="btn btn-outline-primary col-3">주문</a>
+									<a type="button" class="btn btn-outline-primary col-3" onclick="submitForm(this, 'CART')">카트</a>
+									<a type="button" class="btn btn-outline-primary col-3" onclick="submitForm(this, 'ORDER')">주문</a>
 								</div>
-							</form>
+							</div>
 						</div>
-					</div>
-			 	</div>
+				 	</div>
+				 </form>
 			</div>			
 		</div>
 	</div>
@@ -49,7 +54,7 @@
 	const countPlus = function(button) {
 		const index = Number.parseInt(button.parentElement.children.index.value);
 		const value = document.getElementsByName('count')[index];
-		const stock = Number.parseInt(document.getElementsByName('stock')[index].innerText.split(':')[1]);
+		const stock = Number.parseInt(document.querySelectorAll('p[name=stock]')[index].innerText.split(':')[1]);
 		if(stock >= Number.parseInt(value.innerText) + 1) {
 			value.innerText = Number.parseInt(value.innerText) + 1;
 		} else {
@@ -65,6 +70,39 @@
 		} else {
 			alert('0개 이상 선택해야 합니다.');
 		}
+	};
+	
+	const submitForm = function(button, type) {
+		const index = Number.parseInt(button.parentElement.children.index.value);
+		const productId = document.getElementsByName('productId')[index].value;
+		const quantity = document.getElementsByName('count')[index].innerHTML;
+		const price = Number.parseInt(document.querySelectorAll('p[name=price]')[index].innerText.split(':')[1]);
+		const stock = Number.parseInt(document.querySelectorAll('p[name=stock]')[index].innerText.split(':')[1]);
+		
+		if(quantity == 0) {
+			alert('1개 이상 수량을 선택해야 합니다.');
+			return; 
+		}
+		
+		if(stock < quantity) {
+			alert('재고보다 많이 선택할 수 없습니다.');
+			return;
+		}
+		
+		document.getElementById('quantity').value = quantity;
+		document.getElementById('price').value = price;
+		document.getElementById('stock').value = stock;
+		
+		const f = document.getElementById('saveForm');
+		if(type == 'CART') {
+			f.setAttribute('action', '/products/' + productId +'/carts');
+		} else {
+			f.setAttribute('action', '/products/' + productId +'/orders');
+		}
+		
+		f.setAttribute('method', 'post');
+		console.log(f);
+		f.submit();		
 	};
 </script>
 </html>

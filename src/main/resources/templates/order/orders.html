@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: header"><meta charset="UTF-8"></head>
+<body>
+	<nav th:replace="fragments.html :: main-nav(${type}, ${account})"></nav>	                
+	<div class="container1">
+		<div class="p-3 bg-primary text-white" th:if="${!#strings.isEmpty(successMessage)}" th:text="${successMessage}"></div>
+		<div class="p-3 bg-danger text-white" th:if="${!#strings.isEmpty(failMessage)}" th:text="${failMessage}"></div>
+		<div class="col-8" style="margin: auto">
+			<div class="py-5 text-center">
+				<h2 th:if="${type == 'cart'}" th:text="${account.nickname}  + '님이 담은 상품'"></h2>
+				<h2 th:if="${type == 'order'}" th:text="${account.nickname}  + '님이 주문한 상품'"></h2>
+				<h2 th:if="${type == 'sold'}" th:text="${account.nickname}  + '님께서 판매 또는 판매중인 상품'"></h2>
+			</div>
+			<div class="card-deck mt-2" th:each="order, index: ${orders}">
+		 		<div class="col-sm-12">
+				    <div class="card">
+						<div class="card-body">
+							<h5 class="card-title" th:text="${order.product.name}"></h5>
+							<p class="card-text" th:text="'가격: ' + ${order.price} + ' 수량: ' + ${order.quantity} + ' 총 가격: ' + ${order.totalPrice}"></p>
+							<div class="text-right" th:if="${#strings.equals(order.status, 'CANCEL')}">
+								취소되었습니다.
+								<a href="#" th:href="@{'/orders/' + ${order.id} + '/cancel?type=' + ${type}}" class="btn btn-primary" sec:authorize="${hasRole('ROLE_ACCOUNT')}">다시 주문하기</a>
+								<a href="#" th:href="@{'/orders/' + ${order.id} + '/cart?type=' + ${type}}" class="btn btn-primary" sec:authorize="${hasRole('ROLE_ACCOUNT')}">다시 담기</a>
+							</div>
+							<div class="text-right" th:if="${#strings.equals(order.status, 'CART')}" sec:authorize="${hasRole('ROLE_ACCOUNT')}">
+								<a href="#" th:href="@{'/orders/' + ${order.id} + '/order?type=' + ${type}}" class="btn btn-primary">주문하기</a>
+								<a href="#" th:href="@{'/orders/' + ${order.id} + '/cancel?type=' + ${type}}" class="btn btn-danger">취소하기</a>
+							</div>
+							<div class="text-right" th:if="${#strings.equals(order.status, 'ORDER')}" sec:authorize="${hasRole('ROLE_ACCOUNT')}">
+								<a href="#" th:href="@{'/orders/' + ${order.id} + '/cancel?type=' + ${type}}" class="btn btn-danger">취소하기</a>
+							</div>
+							<div class="text-right" th:if="${#strings.equals(order.status, 'ORDER')}" sec:authorize="${hasRole('ROLE_VENDOR')}">
+								<a href="#" th:href="@{'/orders/' + ${order.id} + '/delivery?type=' + ${type}}" class="btn btn-primary">배송 중</a>
+							</div>							
+							<div class="text-right" th:if="${#strings.equals(order.status, 'DELIVERY')}" sec:authorize="${hasRole('ROLE_ACCOUNT')}">
+								배송 중입니다. 잠시만 기다려주세요.
+							</div>
+							<div class="text-right" th:if="${#strings.equals(order.status, 'DELIVERY')}" sec:authorize="${hasRole('ROLE_VENDOR')}">
+								<a href="#" th:href="@{'/orders/' + ${order.id} + '/complete?type=' + ${type}}" class="btn btn-primary">배송완료</a>
+							</div>
+							<div class="text-right" th:if="${#strings.equals(order.status, 'COMPLETE')}">
+								배송 완료하였습니다.
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>			
+		</div>
+	</div>
+	<footer th:insert="fragments.html :: footer"></footer>
+</body>
+<script type="application/javascript">
+	
+</script>
+</html>
