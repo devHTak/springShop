@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.shop.account.Account;
 import com.shop.account.CurrentUser;
+import com.shop.orders.form.OrdersForm;
 import com.shop.product.form.ProductForm;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class ProductSettingController {
 		model.addAttribute("products", products);
 		model.addAttribute("account", account);
 		model.addAttribute("type", "VENDOR");
+		model.addAttribute("ordersForm", new OrdersForm());
 		return "product/products";
 	}
 	
