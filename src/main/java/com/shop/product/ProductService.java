@@ -3,7 +3,8 @@ package com.shop.product;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.shop.account.Account;
@@ -18,8 +19,8 @@ public class ProductService {
 	private final ProductRepository productRepository;
 	
 	
-	public Set<Product> findByAccount(Account account) {
-		return productRepository.findByAccount(account);
+	public Page<Product> findByAccount(Account account, Pageable pageable) {
+		return productRepository.findByAccount(account, pageable);
 	}
 	
 	public Product saveProduct(Account account, ProductForm productForm) {
@@ -51,8 +52,8 @@ public class ProductService {
 		});
 	}
 	
-	public Set<Product> findSearch(String name) {
-		return productRepository.findByNameContainingOrDescriptionContaining(name, name);
+	public Page<Product> findSearch(String name, Pageable pageable) {
+		return productRepository.findByNameContainingOrDescriptionContaining(name, name, pageable);
 	}
 	
 	public Set<Product> findTop6ByOrderBySellCountDesc() {

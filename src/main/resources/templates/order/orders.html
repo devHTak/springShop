@@ -12,7 +12,8 @@
 				<h2 th:if="${type == 'order'}" th:text="${account.nickname}  + '님이 주문한 상품'"></h2>
 				<h2 th:if="${type == 'sold'}" th:text="${account.nickname}  + '님께서 판매 또는 판매중인 상품'"></h2>
 			</div>
-			<div class="card-deck mt-2" th:each="order, index: ${orders}">
+			
+			<div class="col-md-12" th:each="order, index: ${orders}">
 		 		<div class="col-sm-12">
 				    <div class="card">
 						<div class="card-body">
@@ -45,7 +46,41 @@
 						</div>
 					</div>
 				</div>
-			</div>			
+			</div>		
+		</div>
+		<!-- pagination -->
+		<div class="row justify-content-center mt-3">
+			<div class="col-sm-10">
+				<nav aria-label="Page navigation example">
+				  	<ul class="pagination justify-content-center">
+				    	<li class="page-item" th:classappend="${!orders.hasPrevious()} ? disabled">
+				      		<a th:if="${type == 'cart'}" th:href="@{'/carts?sort=orderDate,desc&page=' + ${orders.getNumber() - 1} }" 
+				      			class="page-link" href="#" tabindex="-1" aria-dsiabeld="true">Previous</a>
+				      		<a th:if="${type == 'order'}" th:href="@{'/orders?sort=orderDate,desc&page=' + ${orders.getNumber() - 1} }" 
+				      			class="page-link" href="#" tabindex="-1" aria-dsiabeld="true">Previous</a>
+				      		<a th:if="${type == 'sold'}" th:href="@{'/sold?sort=orderDate,desc&page=' + ${orders.getNumber() - 1} }" 
+				      			class="page-link" href="#" tabindex="-1" aria-dsiabeld="true">Previous</a>
+				    	</li>
+				    	<li class="page-item" th:classappend="${orders.getNumber() == index} ? active" 
+				    		th:each=" index : ${#numbers.sequence(0, orders.getTotalPages() - 1) }">
+				    		<a th:if="${type == 'cart'}" th:href="@{'/carts?sort=orderDate,desc&page=' + ${index} }"
+				    			class="page-link" href="#" th:text="${index + 1}">1</a>
+				    		<a th:if="${type == 'order'}" th:href="@{'/orders?sort=orderDate,desc&page=' + ${index} }"
+				    			class="page-link" href="#" th:text="${index + 1}">1</a>
+				    		<a th:if="${type == 'sold'}" th:href="@{'/sold?sort=orderDate,desc&page=' + ${index} }"
+				    			class="page-link" href="#" th:text="${index + 1}">1</a>
+				    	</li>				    	
+				    	<li class="page-item" th:classappend="${!orders.hasNext()} ? disabled")>
+				      		<a th:if="${type == 'cart'}" th:href="@{'/carts?sort=orderDate,desc&page=' + ${orders.getNumber() + 1}}"
+				      			class="page-link" href="#" >Next</a>
+			      			<a th:if="${type == 'order'}" th:href="@{'/orders?sort=orderDate,desc&page=' + ${orders.getNumber() + 1}}"
+			      				class="page-link" href="#" >Next</a>
+			      			<a th:if="${type == 'sold'}" th:href="@{'/sold?sort=orderDate,desc&page=' + ${orders.getNumber() + 1}}"
+			      				class="page-link" href="#" >Next</a>
+				    	</li>
+				  	</ul>
+				</nav>
+			</div>
 		</div>
 	</div>
 	<footer th:insert="fragments.html :: footer"></footer>

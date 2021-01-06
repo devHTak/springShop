@@ -12,39 +12,65 @@
 			<div class="text-right" sec:authorize="${hasRole('ROLE_VENDOR')}">
 				<a class="btn btn-outline-primary" href="#" th:href="@{'/accounts/' + ${account.id} + '/products/new'}">신규 상품 등록</a>
 			</div>
-			<div class="card-deck">
-				<form class="needs-validation col-sm-12 pr-1" action="#" id="saveForm" th:object="${ordersForm}">
-					<input type="hidden" id="price" name="price" th:field="*{price}">
-					<input type="hidden" id="quantity" name="quantity" th:field="*{quantity}">
-					<input type="hidden" id="stock" name="stock" th:field="*{stock}">
-				 	<div class="col-sm-4 mt-2" th:each="product, index : ${products}">
-				 		<div class="card">
-					 		<div class="card-body">
-								<a class="" href="#" th:href="@{'/accounts/' + ${account.id} + '/products/' + ${product.id}}">
-									<h5 class="card-title" th:text="${product.name}"></h5>
-								</a>
-								<p class="card-text" th:text="${product.description}">description</p>
-								<p class="card-text" th:text="'가격 : ' + ${product.price}" name="price" >price</p>
-								<p class="card-text" th:text="'재고: ' + ${product.stock}" name="stock">stock</p>
-							</div>
-							<div class="card-footer text-right pt-2 py-0 pr-0 pl-0" sec:authorize="${hasRole('ROLE_VENDOR')}">
-								협력사는 주문을 할 수 없습니다.
-							</div>
-							<div class="card-footer text-right pt-2 py-0 pr-0 pl-0" sec:authorize="${hasRole('ROLE_ACCOUNT')}">
-								<div class="form-group">
-									<input type="hidden" th:value="${product.id}" name="productId" >
-									<input type="hidden" th:value="${index.index}" name="index">
-									<input type="hidden" th:value="${product.price}" name="price" >
-									<a class="col-1 bg-secondary text-white" onclick="countMinus(this)" href="#">-</a>
-									<span class="col-1 bolder" name="count" >0</span>
-									<a class="col-1 bg-secondary text-white" onclick="countPlus(this)" href="#">+</a>
-									<a type="button" class="btn btn-outline-primary col-3" onclick="submitForm(this, 'CART')">카트</a>
-									<a type="button" class="btn btn-outline-primary col-3" onclick="submitForm(this, 'ORDER')">주문</a>
+			<div class="row justify-content-center">
+				<div class="col-sm-10">
+					<div class="row">
+						<form class="needs-validation col-sm-12 pr-1" action="#" id="saveForm" th:object="${ordersForm}">
+							<input type="hidden" id="price" name="price" th:field="*{price}">
+							<input type="hidden" id="quantity" name="quantity" th:field="*{quantity}">
+							<input type="hidden" id="stock" name="stock" th:field="*{stock}">
+						 	<div class="col-sm-4 mt-2 float-left" th:each="product, index : ${products}">
+						 		<div class="card">
+							 		<div class="card-body">
+										<a class="" href="#" th:href="@{'/accounts/' + ${account.id} + '/products/' + ${product.id}}">
+											<h5 class="card-title" th:text="${product.name}"></h5>
+										</a>
+										<p class="card-text" th:text="${product.description}">description</p>
+										<p class="card-text" th:text="'가격 : ' + ${product.price}" name="price" >price</p>
+										<p class="card-text" th:text="'재고: ' + ${product.stock}" name="stock">stock</p>
+									</div>
+									<div class="card-footer text-right pt-2 py-0 pr-0 pl-0" sec:authorize="${hasRole('ROLE_VENDOR')}">
+										협력사는 주문을 할 수 없습니다.
+									</div>
+									<div class="card-footer text-right pt-2 py-0 pr-0 pl-0" sec:authorize="${hasRole('ROLE_ACCOUNT')}">
+										<div class="form-group">
+											<input type="hidden" th:value="${product.id}" name="productId" >
+											<input type="hidden" th:value="${index.index}" name="index">
+											<input type="hidden" th:value="${product.price}" name="price" >
+											<a class="col-1 bg-secondary text-white" onclick="countMinus(this)" href="#">-</a>
+											<span class="col-1 bolder" name="count" >0</span>
+											<a class="col-1 bg-secondary text-white" onclick="countPlus(this)" href="#">+</a>
+											<a type="button" class="btn btn-outline-primary col-3" onclick="submitForm(this, 'CART')">카트</a>
+											<a type="button" class="btn btn-outline-primary col-3" onclick="submitForm(this, 'ORDER')">주문</a>
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
+						 	</div>
+				 		</form>
 				 	</div>
-				 </form>
+				 </div>
+			</div>
+			<!-- pagination -->
+			<div class="row justify-content-center mt-3">
+				<div class="col-sm-10">
+					<nav aria-label="Page navigation example">
+					  	<ul class="pagination justify-content-center">
+					    	<li class="page-item" th:classappend="${!products.hasPrevious()} ? disabled">
+					      		<a th:href="@{'/products?name=' + ${keyword} +'&sort=registerDate,desc&page=' + ${products.getNumber() - 1} }" 
+					      			class="page-link" href="#" tabindex="-1" aria-dsiabeld="true">Previous</a>
+					    	</li>
+					    	<li class="page-item" th:classappend="${products.getNumber() == index} ? active" 
+					    		th:each=" index : ${#numbers.sequence(0, products.getTotalPages() - 1) }">
+					    		<a th:href="@{'/products?name=' + ${keyword} +'&sort=registerDate,desc&page=' + ${index} }"
+					    			class="page-link" href="#" th:text="${index + 1}">1</a>
+					    	</li>				    	
+					    	<li class="page-item" th:classappend="${!products.hasNext()} ? disabled">
+					      		<a th:href="@{'/products?name=' + ${keyword} +'&sort=registerDate,desc&page=' + ${products.getNumber() + 1}}"
+					      			class="page-link" href="#" >Next</a>
+					    	</li>
+					  	</ul>
+					</nav>
+				</div>
 			</div>			
 		</div>
 	</div>

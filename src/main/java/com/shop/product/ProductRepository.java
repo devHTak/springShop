@@ -2,15 +2,17 @@ package com.shop.product;
 
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.shop.account.Account;
 
 public interface ProductRepository extends JpaRepository<Product, Long>{
 	
-	public Set<Product> findByAccount(Account account);
+	public Page<Product> findByAccount(Account account, Pageable pageable);
 	
-	public Set<Product> findByNameContainingOrDescriptionContaining(String name, String description);
+	public Page<Product> findByNameContainingOrDescriptionContaining(String name, String description, Pageable pageable);
 
 	public Product findByName(String name);
 	

@@ -1,9 +1,11 @@
 package com.shop.product;
 
-import java.util.Set;
-
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -26,12 +28,13 @@ public class ProductSettingController {
 	private final ProductService productService;
 
 	@GetMapping("/accounts/{accountId}/products")
-	public String getProducts(@CurrentUser Account account, @PathVariable Long accountId, Model model) {
-		Set<Product> products = productService.findByAccount(account);
+	public String getProducts(@CurrentUser Account account, @PageableDefault(size = 6, sort = "registerDate", direction = Direction.DESC, page = 0) Pageable pageable , @PathVariable Long accountId, Model model) {
+		Page<Product> products = productService.findByAccount(account, pageable);
 		
 		model.addAttribute("products", products);
 		model.addAttribute("account", account);
 		model.addAttribute("type", "VENDOR");
+		model.addAttribute("keyword", "");
 		model.addAttribute("ordersForm", new OrdersForm());
 		return "product/products";
 	}
