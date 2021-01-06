@@ -3,6 +3,7 @@ package com.shop.product;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.shop.account.Account;
@@ -52,6 +53,14 @@ public class ProductService {
 	
 	public Set<Product> findSearch(String name) {
 		return productRepository.findByNameContainingOrDescriptionContaining(name, name);
+	}
+	
+	public Set<Product> findTop6ByOrderBySellCountDesc() {
+		return productRepository.findTop6ByOrderBySellCountDesc();
+	}
+	
+	public Set<Product> findTop6ByOrderByRegisterDateDesc() {
+		return productRepository.findTop6ByOrderByRegisterDateDesc();
 	}
 
 }

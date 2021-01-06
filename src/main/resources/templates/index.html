@@ -7,11 +7,54 @@
 	<div th:if="${!#strings.isEmpty(emailMessage)}" class="alert alert-primary mb-1" role="alert" th:text="${emailMessage}"></div>
 	
 	<div class="container1">
-		<div class="jumbotron text-center">
-			<h1 class="display-4">Spring Shop</h1>
-			<p class="lead">회권 가입 바랍니다!<br/> <br/>
-		  	<a class="btn btn-primary btn-lg" href="#" th:href="@{/accounts}" role="button">회원 가입</a>
+		<div class="text-center mt-5">
+			<h2>Spring Shop</h2>
 		</div>
+		<form class="needs-validation col-sm-12 pr-1 " action="#" id="saveForm" th:object="${ordersForm}">
+			<input type="hidden" id="price" name="price" th:field="*{price}"> 
+			<input type="hidden" id="quantity" name="quantity" th:field="*{quantity}">
+			<input type="hidden" id="stock" name="stock" th:field="*{stock}">
+			<div class="text-left mt-5">  
+				<h5>최신 상품</h5>
+			</div>
+			<div class="card-deck">
+				<div class="col-sm-4 mt-2" th:each="product, index : ${latestProducts}">
+			 		<div class="card">
+				 		<div class="card-body">
+				 			<div sec:authorize="${!isAuthenticated() || hasRole('ROLE_ACCOUNT')}">
+				 				<h5 class="card-title" th:text="${product.name}"></h5>
+				 			</div>
+							<a sec:authorize="${hasRole('ROLE_VENDOR')}" href="#" th:href="@{'/accounts/' + ${account.id} + '/products/' + ${product.id}}" >
+								<h5 class="card-title" th:text="${product.name}"></h5>
+							</a>
+							<p class="card-text" th:text="${product.description}">description</p>
+							<p class="card-text" th:text="'가격 : ' + ${product.price}" name="price" >price</p>
+							<p class="card-text" th:text="'재고: ' + ${product.stock}" name="stock">stock</p>
+						</div>
+					</div>
+			 	</div>
+			</div>
+			<div class="text-left mt-5">
+				<h5>인기 상품</h5>
+			</div>
+			<div class="card-deck">
+				<div class="col-sm-4 mt-2" th:each="product, index : ${bestProducts}">
+			 		<div class="card">
+				 		<div class="card-body">
+							<div sec:authorize="${!isAuthenticated() || hasRole('ROLE_ACCOUNT')}">
+				 				<h5 class="card-title" th:text="${product.name}"></h5>
+				 			</div>
+							<a sec:authorize="${hasRole('ROLE_VENDOR')}" href="#" th:href="@{'/accounts/' + ${account.id} + '/products/' + ${product.id}}" >
+								<h5 class="card-title" th:text="${product.name}"></h5>
+							</a>
+							<p class="card-text" th:text="${product.description}">description</p>
+							<p class="card-text" th:text="'가격 : ' + ${product.price}" name="price" >price</p>
+							<p class="card-text" th:text="'재고: ' + ${product.stock}" name="stock">stock</p>
+						</div>
+					</div>
+			 	</div>
+			</div>
+		</form>
 	</div>
 	<footer th:insert="fragments.html :: footer"></footer>
 </body>

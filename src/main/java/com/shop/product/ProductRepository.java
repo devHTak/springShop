@@ -13,4 +13,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 	public Set<Product> findByNameContainingOrDescriptionContaining(String name, String description);
 
 	public Product findByName(String name);
+	
+	public Set<Product> findTop6ByOrderBySellCountDesc();
+	
+	public Set<Product> findTop6ByOrderByRegisterDateDesc();
 }
