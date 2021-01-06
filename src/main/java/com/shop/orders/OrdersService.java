@@ -2,14 +2,13 @@ package com.shop.orders;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shop.account.Account;
-import com.shop.account.AccountRepository;
 import com.shop.orders.form.OrdersForm;
 import com.shop.product.Product;
 import com.shop.product.ProductService;
@@ -23,18 +22,17 @@ public class OrdersService {
 	
 	private final ProductService productService;
 	private final OrdersRepository orderRepository;
-	private final AccountRepository accountRepository;
 	
-	public Set<Orders> findForCartByCustomer(Account account, OrdersStatus orderStatus, Sort sort) {
-		return orderRepository.findByCustomerAndStatus(account, orderStatus, sort); 
+	public Page<Orders> findForCartByCustomer(Account account, OrdersStatus orderStatus, Pageable pageable) {
+		return orderRepository.findByCustomerAndStatus(account, orderStatus, pageable); 
 	}
 	
-	public Set<Orders> findForOrderByCustomer(Account account, List<OrdersStatus> orderStatus, Sort sort) {
-		return orderRepository.findByCustomerAndStatusNotIn(account, orderStatus, sort);
+	public Page<Orders> findForOrderByCustomer(Account account, List<OrdersStatus> orderStatus, Pageable pageable) {
+		return orderRepository.findByCustomerAndStatusNotIn(account, orderStatus, pageable);
 	}
 	
-	public Set<Orders> findForSoldByVendor(Account account, Sort sort) {
-		return orderRepository.findByVendor(account, sort);
+	public Page<Orders> findForSoldByVendor(Account account, Pageable pageable) {
+		return orderRepository.findByVendor(account, pageable);
 	}
 
 	public Orders saveToCart(Account account, Long productId, OrdersForm ordersForm) {

@@ -1,9 +1,10 @@
 package com.shop.product;
 
-import java.util.Set;
-
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -18,8 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.shop.account.Account;
 import com.shop.account.CurrentUser;
-import com.shop.orders.OrdersService;
 import com.shop.orders.Orders;
+import com.shop.orders.OrdersService;
 import com.shop.orders.form.OrdersForm;
 import com.shop.orders.form.OrdersFormValidator;
 
@@ -38,10 +39,11 @@ public class ProductController {
 		binder.addValidators(ordersFormValidator);
 	}
 	
+	// 페이지
 	@GetMapping("/products")
-	public String retrieveProductByName(@CurrentUser Account account, @RequestParam String name, Model model) {
+	public String retrieveProductByName(@CurrentUser Account account, @PageableDefault(size = 6, page = 0, sort = "registerDate") Pageable pageable, @RequestParam String name, Model model) {
 		
-		Set<Product> products = productService.findSearch(name);
+		Page<Product> products = productService.findSearch(name, pageable);
 		
 		model.addAttribute("products", products);
 		model.addAttribute("account", account);

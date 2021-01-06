@@ -2,9 +2,11 @@ package com.shop.orders;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,23 +25,23 @@ public class OrdersController {
 	
 	private final OrdersService orderService;
 	
+	// 페이지
 	@GetMapping("/carts")
-	public String getCartPage(@CurrentUser Account account, Model model) {
-		Sort sort = sortByOrderDate();
-		Set<Orders> orders = orderService.findForCartByCustomer(account, OrdersStatus.CART, sort);
+	public String getCartPage(@CurrentUser Account account, @PageableDefault(size = 6, page = 0, sort = "orderDate", direction = Direction.DESC ) Pageable pageable,  Model model) {
+		Page<Orders> orders = orderService.findForCartByCustomer(account, OrdersStatus.CART, pageable);
 		model.addAttribute("orders", orders);
 		model.addAttribute("account", account);
 		model.addAttribute("type", "cart");
 		return "order/orders";
 	}
 	
+	// 페이지
 	@GetMapping("/orders")
-	public String getOrderPage(@CurrentUser Account account, Model model) {
+	public String getOrderPage(@CurrentUser Account account, @PageableDefault(size = 6, page = 0, sort = "orderDate", direction = Direction.DESC ) Pageable pageable, Model model) {
 		List<OrdersStatus> orderStatus = new ArrayList<>();
 		orderStatus.add(OrdersStatus.CART); orderStatus.add(OrdersStatus.CANCEL);
 		
-		Sort sort = sortByOrderDate();
-		Set<Orders> orders = orderService.findForOrderByCustomer(account, orderStatus, sort);
+		Page<Orders> orders = orderService.findForOrderByCustomer(account, orderStatus, pageable);
 		model.addAttribute("orders", orders);
 		model.addAttribute("account", account);
 		model.addAttribute("type", "order");
@@ -47,9 +49,8 @@ public class OrdersController {
 	}
 	
 	@GetMapping("/sold")
-	public String getSoldPage(@CurrentUser Account account, Model model) {
-		Sort sort = sortByOrderDate();
-		Set<Orders> orders = orderService.findForSoldByVendor(account, sort);
+	public String getSoldPage(@CurrentUser Account account, @PageableDefault(size = 6, page = 0, sort = "orderDate", direction = Direction.DESC) Pageable pageable, Model model) {
+		Page<Orders> orders = orderService.findForSoldByVendor(account, pageable);
 		model.addAttribute("orders", orders);
 		model.addAttribute("account", account);
 		model.addAttribute("type", "sold");
@@ -72,10 +73,6 @@ public class OrdersController {
 		} else {
 			return "redirect:/sold";
 		}
-	}
-	
-	private Sort sortByOrderDate() {
-		return Sort.by(Sort.Direction.DESC, "orderDate");
 	}
 
 }
