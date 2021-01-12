@@ -1,7 +1,7 @@
 #### 코로나 시대에 놀면 뭐하니 프로젝트 - Spring Shop
 
 ##### 0. Intro
-간단한 쇼핑몰을 구현하면서 Spring Boot + JPA, Thymeleaf 활용한 프로젝트
+간단한 쇼핑몰을 구현하면서 Spring Boot + JPA, Thymeleaf + JUnit5, Mock 활용한 프로젝트
 
 ##### 1. 도메인
 
