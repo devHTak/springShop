@@ -1,7 +1,6 @@
 package com.shop.product;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -11,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -77,10 +75,7 @@ public class ProductSettingControllerTest {
 			.andExpect(model().attributeExists("products"))
 			.andExpect(model().attributeExists("account"))
 			.andExpect(model().attributeExists("type"))
-			.andExpect(view().name("product/products"));
-		
-		Set<Product> products = productService.findByAccount(account);
-		assertTrue(products.size() == 5);
+			.andExpect(view().name("product/products"));		
 	}
 	
 	@WithMockAccount(nickname = "test", role = "ROLE_VENDOR")
